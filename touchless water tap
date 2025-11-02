@@ -1,0 +1,53 @@
+// --- Pin Definitions ---
+#define TRIG_PIN 9
+#define ECHO_PIN 8
+#define RELAY_PIN 7
+
+// --- Variables ---
+long duration;
+int distance;
+
+void setup() {
+  // Pin setup
+  pinMode(TRIG_PIN, OUTPUT);
+  pinMode(ECHO_PIN, INPUT);
+  pinMode(RELAY_PIN, OUTPUT);
+  
+  // Ensure relay is OFF at start
+  digitalWrite(RELAY_PIN, LOW);
+
+  // Start Serial Monitor
+  Serial.begin(9600);
+  Serial.println("Touchless Water Tap System Initialized");
+}
+
+void loop() {
+  // --- Trigger the Ultrasonic Sensor ---
+  digitalWrite(TRIG_PIN, LOW);
+  delayMicroseconds(2);
+  digitalWrite(TRIG_PIN, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(TRIG_PIN, LOW);
+
+  // --- Read the Echo ---
+  duration = pulseIn(ECHO_PIN, HIGH);
+  distance = duration * 0.034 / 2; // Convert to cm
+
+  // --- Display Distance in Serial Monitor ---
+  Serial.print("Distance: ");
+  Serial.print(distance);
+  Serial.println(" cm");
+
+  // --- Control Relay Based on Distance ---
+  if (distance > 0 && distance <= 20) {
+    digitalWrite(RELAY_PIN, HIGH);  // Pump ON
+    Serial.println("Water Pump ON");
+  } else {
+    digitalWrite(RELAY_PIN, LOW);   // Pump OFF
+    Serial.println("Water Pump OFF");
+  }
+
+  delay(200); // Small delay for stable readings
+}
+
+
