@@ -1,0 +1,87 @@
+#include <Servo.h>
+
+Servo lidServo;
+
+const int trigPin = 9;
+const int echoPin = 10;
+const int servoPin = 6;
+long duration;
+int distance;
+
+void setup() {
+  lidServo.attach(servoPin);
+  lidServo.write(0); // Lid closed (anti-clockwise)
+  pinMode(trigPin, OUTPUT);
+  pinMode(echoPin, INPUT);
+  Serial.begin(9600);
+}
+
+void loop() {
+  // Send ultrasonic pulse
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+
+  duration = pulseIn(echoPin, HIGH);
+  distance = duration * 0.034 / 2;
+
+  Serial.println(distance);
+
+  if (distance > 0 && distance <= 20) {
+    // Open lid: anti-clockwise (180 degree)
+    lidServo.write(180); // Lid open
+  } else {
+    // Close lid: back to 0 degree (anti-clockwise)
+    lidServo.write(0);   // Lid closed
+  }
+
+  delay(100); // Responsive update
+}
+
+
+OR 
+
+#include <Servo.h>
+
+Servo lidServo;
+
+const int trigPin = 9;
+const int echoPin = 10;
+const int servoPin = 6;
+long duration;
+int distance;
+
+void setup() {
+  lidServo.attach(servoPin);
+  lidServo.write(0); // Lid closed (anti-clockwise endpoint)
+  pinMode(trigPin, OUTPUT);
+  pinMode(echoPin, INPUT);
+  Serial.begin(9600);
+}
+
+void loop() {
+  // Ultrasonic distance measurement
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+
+  duration = pulseIn(echoPin, HIGH);
+  distance = duration * 0.034 / 2;
+
+  Serial.println(distance);
+
+  if (distance > 0 && distance <= 20) {
+    // Open lid anti-clockwise
+    lidServo.write(180); // Maximum anti-clockwise angle
+  } else {
+    // Close lid (back to 0°, anti-clockwise path)
+    lidServo.write(0);
+  }
+
+  delay(100); // Fast response
+}
+
